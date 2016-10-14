@@ -13,7 +13,8 @@ To install nhlomann/json (https://github.com/nlohmann/json):
 
 ### Building
 
-`clang main.cpp -o geometry -lc++ -std=c++11`
+`mkdir build && cd build
+ clang ../main.cpp ../Geometry.cpp -o geometry -lc++ -std=c++11`
 
 ### Running
 
