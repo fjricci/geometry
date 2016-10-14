@@ -7,9 +7,11 @@
 
 #include "Geometry.h"
 
+#include <vector>
+
 class Profile {
 public:
-  Profile(std::vector<Edge> edges);
+  Profile(std::vector<Edge *> edges);
 
 public:
   double getCost() const { return cost; }
@@ -23,5 +25,5 @@ protected:
 
 protected:
   double cost;
-  std::vector<Edge> profile;
+  std::vector<Edge *> profile;
 };

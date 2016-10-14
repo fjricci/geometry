@@ -15,6 +15,10 @@ public:
     return (x == other.x) && (y == other.y);
   }
 
+  bool operator!=(Point const &other) const {
+    return (x != other.x) || (y != other.y);
+  }
+
   bool operator<(Point const &other) const {
     return (x == other.x) ? y < other.y : x < other.x;
   }
@@ -24,8 +28,8 @@ public:
   double computeArcDistance(Point const &other, Point const &center) const;
 
 public:
-  double getX() { return x; }
-  double getY() { return y; }
+  double getX() const { return x; }
+  double getY() const { return y; }
 
 protected:
   double x;
@@ -39,12 +43,12 @@ public:
       : start(xStart, yStart), end(xEnd, yEnd) {}
 
 public:
-  virtual double getRadius() = 0;
-  virtual double getLength() = 0;
+  virtual double getRadius() const = 0;
+  virtual double getLength() const = 0;
 
 public:
-  bool operator<(Edge const &other) const {
-    return (start == other.start) ? (end < other.end) : (start < other.start);
+  static bool comparePtrs(Edge const *a, Edge const *b) {
+    return (a->start == b->start) ? (a->end < b->end) : (a->start < b->start);
   }
 
   bool operator==(Edge const &other) const {
@@ -56,8 +60,8 @@ public:
   const Point &getEnd() const { return end; }
 
 protected:
-  Point start;
-  Point end;
+  const Point start;
+  const Point end;
 };
 
 class StraightEdge : Edge {
@@ -68,8 +72,8 @@ public:
   }
 
 public:
-  double getRadius() { return 0; }
-  double getLength() { return len; }
+  double getRadius() const { return 0; }
+  double getLength() const { return len; }
 
 protected:
   double len;
@@ -81,8 +85,8 @@ public:
              double xCenter, double yCenter);
 
 public:
-  double getRadius() { return rad; }
-  double getLength() { return len; }
+  double getRadius() const { return rad; }
+  double getLength() const { return len; }
 
 protected:
   Point center;
