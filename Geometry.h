@@ -15,6 +15,10 @@ public:
     return (x == other.x) && (y == other.y);
   }
 
+  bool operator<(Point const &other) const {
+    return (x == other.x) ? y < other.y : x < other.x;
+  }
+
 public:
   double computeLinearDistance(Point const &other) const;
   double computeArcDistance(Point const &other, Point const &center) const;
@@ -33,6 +37,15 @@ public:
 public:
   virtual double getRadius() = 0;
   virtual double getLength() = 0;
+
+public:
+  bool operator<(Edge const &other) const {
+    return (start == other.start) ? (end < other.end) : (start < other.start);
+  }
+
+  bool operator==(Edge const &other) const {
+    return (start == other.start) && (end == other.end);
+  }
 
 protected:
   Point start;
