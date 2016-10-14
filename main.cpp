@@ -11,7 +11,7 @@
 
 using json = nlohmann::json;
 
-void parseJsonFile(std::string &filename, json &jsonObj) {
+static void parseJsonFile(std::string &filename, json &jsonObj) {
   std::ifstream inputFile(filename);
   inputFile >> jsonObj;
 }
