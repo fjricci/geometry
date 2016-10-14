@@ -6,7 +6,7 @@
 #pragma once
 
 // Represents a single point on a 2D grid
-struct Point {
+class Point {
 public:
   Point(double xCoord, double yCoord) : x(xCoord), y(yCoord) {}
 
@@ -22,6 +22,10 @@ public:
 public:
   double computeLinearDistance(Point const &other) const;
   double computeArcDistance(Point const &other, Point const &center) const;
+
+public:
+  double getX() { return x; }
+  double getY() { return y; }
 
 protected:
   double x;
@@ -46,6 +50,10 @@ public:
   bool operator==(Edge const &other) const {
     return (start == other.start) && (end == other.end);
   }
+
+public:
+  const Point &getStart() const { return start; }
+  const Point &getEnd() const { return end; }
 
 protected:
   Point start;
