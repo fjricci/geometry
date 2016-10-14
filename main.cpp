@@ -3,8 +3,18 @@
 //
 //  Main runner for quote computation program
 
+#include "json.hpp"
+
+#include <fstream>
 #include <iostream>
 #include <string>
+
+using json = nlohmann::json;
+
+void parseJsonFile(std::string &filename, json &jsonObj) {
+  std::ifstream inputFile(filename);
+  inputFile >> jsonObj;
+}
 
 int main(int argc, char **argv) {
   if (argc != 2) {
@@ -13,6 +23,13 @@ int main(int argc, char **argv) {
   }
 
   std::string filename(argv[1]);
-  std::cout << "computing quote for " << filename << std::endl;
+  std::cout << "computing quote for: " << filename << std::endl;
+
+  json jsonObj;
+  parseJsonFile(filename, jsonObj);
+
+  std::cout << "using json data:" << std::endl;
+  std::cout << jsonObj.dump(4) << std::endl;
+
   return 0;
 }
