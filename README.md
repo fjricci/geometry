@@ -17,4 +17,4 @@ To install nhlomann/json (https://github.com/nlohmann/json):
 
 ### Running
 
-`gemoetry profile.json`
+`geometry profile.json`
