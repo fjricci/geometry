@@ -3,7 +3,9 @@
 This program takes a json file as input and generates a quote for the
 manufacturing cost.
 
-### Installing libraries
+Supported on MacOSX with clang.
+
+### Installing dependencies
 
 To install nhlomann/json (https://github.com/nlohmann/json):
 
