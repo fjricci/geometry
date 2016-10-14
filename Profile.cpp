@@ -46,17 +46,17 @@ double Profile::computeAreaCost() const {
     yVals.push_back(edge->getEnd().getY());
   }
 
-  double xMin = *std::min(xVals.begin(), xVals.end()) + PADDING_SIZE;
-  double yMin = *std::min(yVals.begin(), yVals.end()) + PADDING_SIZE;
-  double xMax = *std::max(xVals.begin(), xVals.end()) + PADDING_SIZE;
-  double yMax = *std::max(yVals.begin(), yVals.end()) + PADDING_SIZE;
+  double xMin = *std::min_element(xVals.begin(), xVals.end());
+  double yMin = *std::min_element(yVals.begin(), yVals.end());
+  double xMax = *std::max_element(xVals.begin(), xVals.end()) + PADDING_SIZE;
+  double yMax = *std::max_element(yVals.begin(), yVals.end()) + PADDING_SIZE;
 
   return (xMax - xMin) * (yMax - yMin) * MATERIAL_COST;
 }
 
 // returns whether point is less than the point at the start of the edge
 static bool findPoint(std::shared_ptr<Edge> edge, Point const &point) {
-  return point < edge->getStart();
+  return edge->getStart() < point;
 }
 
 bool Profile::isValid() const {

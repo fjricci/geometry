@@ -5,6 +5,7 @@
 
 #include "json.hpp"
 #include "Geometry.h"
+#include "Profile.h"
 
 #include <cassert>
 #include <fstream>
@@ -14,8 +15,10 @@
 
 using json = nlohmann::json;
 
-static void parseJsonFile(std::string &filename, json &jsonObj) {
+static void parseJsonFile(std::string &filename) {
   std::ifstream inputFile(filename);
+
+  json jsonObj;
   inputFile >> jsonObj;
 
   assert(jsonObj.count("Edges") == 1);
@@ -50,6 +53,9 @@ static void parseJsonFile(std::string &filename, json &jsonObj) {
       assert(0);
     }
   }
+
+  Profile profile(edgeVec);
+  std::cout << profile.getCost() << std::endl;
 }
 
 int main(int argc, char **argv) {
@@ -61,8 +67,7 @@ int main(int argc, char **argv) {
   std::string filename(argv[1]);
   std::cout << "computing quote for: " << filename << std::endl;
 
-  json jsonObj;
-  parseJsonFile(filename, jsonObj);
+  parseJsonFile(filename);
 
   return 0;
 }
