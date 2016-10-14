@@ -66,7 +66,7 @@ protected:
   const Point _end;
 };
 
-class StraightEdge : Edge {
+class StraightEdge : public Edge {
 public:
   StraightEdge(Point start, Point end) : Edge(start, end) {
     _len = start.computeLinearDistance(end);
@@ -80,7 +80,7 @@ protected:
   double _len;
 };
 
-class CurvedEdge : Edge {
+class CurvedEdge : public Edge {
 public:
   CurvedEdge(Point start, Point end, Point center);
 
