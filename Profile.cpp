@@ -14,17 +14,17 @@
 #define MAX_SPEED 0.5
 #define TIME_COST 0.07
 
-Profile::Profile(std::vector<Edge *> edges) : profile(edges) {
-  std::sort(profile.begin(), profile.end(), Edge::comparePtrs);
+Profile::Profile(std::vector<std::shared_ptr<Edge>> edges) : _profile(edges) {
+  std::sort(_profile.begin(), _profile.end(), Edge::comparePtrs);
   assert(isValid());
 
-  cost = computeTimeCost() + computeAreaCost();
+  _cost = computeTimeCost() + computeAreaCost();
 }
 
 double Profile::computeTimeCost() const {
   double timeCost = 0;
 
-  for (auto const *edge : profile) {
+  for (auto edge : _profile) {
     double r = edge->getRadius();
     double len = edge->getLength();
 
@@ -39,7 +39,7 @@ double Profile::computeTimeCost() const {
 double Profile::computeAreaCost() const {
   std::vector<double> xVals;
   std::vector<double> yVals;
-  for (auto const *edge : profile) {
+  for (auto edge : _profile) {
     xVals.push_back(edge->getStart().getX());
     xVals.push_back(edge->getEnd().getX());
     yVals.push_back(edge->getStart().getY());
@@ -55,23 +55,23 @@ double Profile::computeAreaCost() const {
 }
 
 // returns whether point is less than the point at the start of the edge
-static bool findPoint(Edge const *edge, Point const &point) {
+static bool findPoint(std::shared_ptr<Edge> edge, Point const &point) {
   return point < edge->getStart();
 }
 
 bool Profile::isValid() const {
-  Edge const *current = profile[0];
-  Edge const *next = current;
-  size_t numEdges = profile.size();
+  std::shared_ptr<Edge> current = _profile[0];
+  std::shared_ptr<Edge> next = current;
+  size_t numEdges = _profile.size();
 
   for (size_t i = 0; i < numEdges; ++i) {
-    next = *std::lower_bound(profile.begin(), profile.end(), current->getEnd(),
-                             findPoint);
+    next = *std::lower_bound(_profile.begin(), _profile.end(),
+                             current->getEnd(), findPoint);
     if (current->getEnd() != next->getStart()) {
       return false;
     }
 
-    if (*next == *profile[0]) {
+    if (*next == *_profile[0]) {
       return (i == numEdges - 1) ? true : false;
     }
 

@@ -10,8 +10,8 @@
 
 // sqrt((x1 - x2)^2 + (y1 - y2)^2)
 double Point::computeLinearDistance(Point const &other) const {
-  double xDiff = x - other.x;
-  double yDiff = y - other.y;
+  double xDiff = _x - other._x;
+  double yDiff = _y - other._y;
   double squareDist = xDiff * xDiff + yDiff * yDiff;
 
   return sqrt(squareDist);
@@ -33,11 +33,10 @@ double Point::computeArcDistance(Point const &other,
 
 // CurvedEdge
 
-CurvedEdge::CurvedEdge(double xStart, double yStart, double xEnd, double yEnd,
-                       double xCenter, double yCenter)
-    : Edge(xStart, yStart, xEnd, yEnd), center(xCenter, yCenter) {
-  rad = start.computeLinearDistance(center);
-  assert(rad == end.computeLinearDistance(center));
+CurvedEdge::CurvedEdge(Point start, Point end, Point center)
+    : Edge(start, end), _center(center) {
+  _radius = start.computeLinearDistance(center);
+  assert(_radius == end.computeLinearDistance(center));
 
-  len = start.computeArcDistance(end, center);
+  _len = start.computeArcDistance(end, center);
 }

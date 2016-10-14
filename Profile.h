@@ -11,10 +11,10 @@
 
 class Profile {
 public:
-  Profile(std::vector<Edge *> edges);
+  Profile(std::vector<std::shared_ptr<Edge>> edges);
 
 public:
-  double getCost() const { return cost; }
+  double getCost() const { return _cost; }
 
 protected:
   double computeTimeCost() const;
@@ -24,6 +24,6 @@ protected:
   bool isValid() const;
 
 protected:
-  double cost;
-  std::vector<Edge *> profile;
+  double _cost;
+  std::vector<std::shared_ptr<Edge>> _profile;
 };

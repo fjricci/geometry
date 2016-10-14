@@ -5,22 +5,24 @@
 
 #pragma once
 
+#include <memory>
+
 // Represents a single point on a 2D grid
 class Point {
 public:
-  Point(double xCoord, double yCoord) : x(xCoord), y(yCoord) {}
+  Point(double x, double y) : _x(x), _y(y) {}
 
 public:
   bool operator==(Point const &other) const {
-    return (x == other.x) && (y == other.y);
+    return (_x == other._x) && (_y == other._y);
   }
 
   bool operator!=(Point const &other) const {
-    return (x != other.x) || (y != other.y);
+    return (_x != other._x) || (_y != other._y);
   }
 
   bool operator<(Point const &other) const {
-    return (x == other.x) ? y < other.y : x < other.x;
+    return (_x == other._x) ? _y < other._y : _x < other._x;
   }
 
 public:
@@ -28,68 +30,66 @@ public:
   double computeArcDistance(Point const &other, Point const &center) const;
 
 public:
-  double getX() const { return x; }
-  double getY() const { return y; }
+  double getX() const { return _x; }
+  double getY() const { return _y; }
 
 protected:
-  double x;
-  double y;
+  double _x;
+  double _y;
 };
 
 // Represents an edge on a 2D grid
 class Edge {
 public:
-  Edge(double xStart, double yStart, double xEnd, double yEnd)
-      : start(xStart, yStart), end(xEnd, yEnd) {}
+  Edge(Point start, Point end) : _start(start), _end(end) {}
 
 public:
   virtual double getRadius() const = 0;
   virtual double getLength() const = 0;
 
 public:
-  static bool comparePtrs(Edge const *a, Edge const *b) {
-    return (a->start == b->start) ? (a->end < b->end) : (a->start < b->start);
+  static bool comparePtrs(std::shared_ptr<Edge> a, std::shared_ptr<Edge> b) {
+    return (a->_start == b->_start) ? (a->_end < b->_end)
+                                    : (a->_start < b->_start);
   }
 
   bool operator==(Edge const &other) const {
-    return (start == other.start) && (end == other.end);
+    return (_start == other._start) && (_end == other._end);
   }
 
 public:
-  const Point &getStart() const { return start; }
-  const Point &getEnd() const { return end; }
+  const Point &getStart() const { return _start; }
+  const Point &getEnd() const { return _end; }
 
 protected:
-  const Point start;
-  const Point end;
+  const Point _start;
+  const Point _end;
 };
 
 class StraightEdge : Edge {
 public:
-  StraightEdge(double xStart, double yStart, double xEnd, double yEnd)
-      : Edge(xStart, yStart, xEnd, yEnd) {
-    len = start.computeLinearDistance(end);
+  StraightEdge(Point start, Point end) : Edge(start, end) {
+    _len = start.computeLinearDistance(end);
   }
 
 public:
   double getRadius() const { return 0; }
-  double getLength() const { return len; }
+  double getLength() const { return _len; }
 
 protected:
-  double len;
+  double _len;
 };
 
 class CurvedEdge : Edge {
 public:
-  CurvedEdge(double xStart, double yStart, double xEnd, double yEnd,
-             double xCenter, double yCenter);
+  CurvedEdge(Point start, Point end, Point center);
 
 public:
-  double getRadius() const { return rad; }
-  double getLength() const { return len; }
+  double getRadius() const { return _radius; }
+  double getLength() const { return _len; }
 
 protected:
-  Point center;
-  double len;
-  double rad;
+  Point _center;
+  double _len;
+  double _radius;
 };
