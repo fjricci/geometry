@@ -53,11 +53,6 @@ public:
   virtual double getLength() const = 0;
 
 public:
-  static bool comparePtrs(std::shared_ptr<Edge> a, std::shared_ptr<Edge> b) {
-    return (a->_start == b->_start) ? (a->_end < b->_end)
-                                    : (a->_start < b->_start);
-  }
-
   bool operator==(Edge const &other) const {
     return (_start == other._start) && (_end == other._end);
   }

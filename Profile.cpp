@@ -15,7 +15,6 @@
 #define TIME_COST 0.07
 
 Profile::Profile(std::vector<std::shared_ptr<Edge>> edges) : _profile(edges) {
-  std::sort(_profile.begin(), _profile.end(), Edge::comparePtrs);
   assert(isValid());
 
   _cost = computeTimeCost() + computeAreaCost();
@@ -59,29 +58,33 @@ double Profile::computeAreaCost() const {
   return (xMax - xMin) * (yMax - yMin) * MATERIAL_COST;
 }
 
-// returns whether point is less than the point at the start of the edge
-static bool findPoint(std::shared_ptr<Edge> edge, Point const &point) {
-  return edge->getStart() < point;
-}
-
 bool Profile::isValid() const {
-  std::shared_ptr<Edge> current = _profile[0];
-  std::shared_ptr<Edge> next = current;
-  size_t numEdges = _profile.size();
+  Point start = _profile[0]->getStart();
+  Point current = _profile[0]->getEnd();
 
-  for (size_t i = 0; i < numEdges; ++i) {
-    next = *std::lower_bound(_profile.begin(), _profile.end(),
-                             current->getEnd(), findPoint);
-    if (current->getEnd() != next->getStart()) {
+  std::vector<std::shared_ptr<Edge>> edges(_profile.begin() + 1,
+                                           _profile.end());
+  while (!edges.empty()) {
+    bool found = false;
+
+    for (auto it = edges.begin(); it != edges.end(); ++it) {
+      if (current == (*it)->getStart()) {
+        current = (*it)->getEnd();
+        edges.erase(it);
+        found = true;
+        break;
+      } else if (current == (*it)->getEnd()) {
+        current = (*it)->getStart();
+        edges.erase(it);
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
       return false;
     }
-
-    if (*next == *_profile[0]) {
-      return (i == numEdges - 1) ? true : false;
-    }
-
-    current = next;
   }
 
-  return false;
+  return (start == current);
 }
