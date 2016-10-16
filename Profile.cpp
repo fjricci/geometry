@@ -28,6 +28,7 @@ double Profile::computeTimeCost() const {
     double r = edge->getRadius();
     double len = edge->getLength();
 
+    // A modified length, which accounts for slower speeds on curved arcs
     double modLen = (r == 0) ? len : len / exp(-1 / r);
 
     timeCost += (TIME_COST / MAX_SPEED) * modLen;
@@ -59,6 +60,7 @@ double Profile::computeAreaCost() const {
   return (xMax - xMin) * (yMax - yMin) * MATERIAL_COST;
 }
 
+// Some basic checks that the input profile is valid and fully connected
 bool Profile::isValid() const {
   Point start = _profile[0]->getStart();
   Point current = _profile[0]->getEnd();

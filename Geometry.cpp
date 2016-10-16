@@ -17,6 +17,8 @@ double Point::computeLinearDistance(Point const &other) const {
   return sqrt(squareDist);
 }
 
+// The angle between this point and other, as described by a circled with an
+// origin at center
 double Point::computeArcAngle(Point const &other, Point const &center) const {
   double startAngle = atan2(_y - center._y, _x - center._x);
   double endAngle = atan2(other._y - center._y, other._x - center._x);
@@ -24,7 +26,6 @@ double Point::computeArcAngle(Point const &other, Point const &center) const {
   return startAngle - endAngle;
 }
 
-// r * acos((2r^2 - |p1 - p2|^2) / 2r^2)
 double Point::computeArcDistance(Point const &other,
                                  Point const &center) const {
   double radius = computeLinearDistance(center);
@@ -32,6 +33,8 @@ double Point::computeArcDistance(Point const &other,
   return std::abs(radius * computeArcAngle(other, center));
 }
 
+// The point in the center of the arc described by this point, and other,
+// with its origin at center
 Point Point::computeArcPoint(Point const &other, Point const &center) const {
   double radius = computeLinearDistance(center);
   double angle = computeArcAngle(other, center) / 2;

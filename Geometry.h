@@ -80,6 +80,7 @@ protected:
   const Point _end;
 };
 
+// Represents a straight line
 class StraightEdge : public Edge {
 public:
   StraightEdge(Point start, Point end) : Edge(start, end) {
@@ -94,6 +95,7 @@ protected:
   double _len;
 };
 
+// Represents an arc
 class CurvedEdge : public Edge {
 public:
   CurvedEdge(Point start, Point end, Point center);
@@ -117,8 +119,8 @@ public:
   }
 
 protected:
-  Point _center;
-  Point _arcPoint;
+  Point _center;   // the origin of the circle described by the arc
+  Point _arcPoint; // the center point along the arc's circumference
   double _len;
   double _radius;
 };

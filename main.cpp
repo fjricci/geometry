@@ -46,6 +46,7 @@ static void parseJsonFile(std::string &filename,
     } else if (type == "CircularArc") {
       Point center(edge["Center"]["X"], edge["Center"]["Y"]);
 
+      // ensure that the starting point of the arc is correct
       if (static_cast<size_t>(edge["ClockwiseFrom"]) != vertices[0]) {
         std::swap(start, end);
       }
