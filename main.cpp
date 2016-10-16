@@ -76,7 +76,8 @@ int main(int argc, char **argv) {
 
   try {
     Profile profile(edgeVec);
-    std::cout << "Cost: " << profile.getCost() << std::endl;
+    std::cout << "Cost: " << std::setprecision(2) << std::fixed
+              << profile.getCost() << std::endl;
   } catch (const std::invalid_argument &e) {
     std::cerr << "error: geometry is invalid" << std::endl;
     exit(EXIT_FAILURE);

@@ -18,7 +18,6 @@ double Point::computeLinearDistance(Point const &other) const {
 }
 
 double Point::computeArcAngle(Point const &other, Point const &center) const {
-  double radius = computeLinearDistance(center);
   double startAngle = atan2(_y - center._y, _x - center._x);
   double endAngle = atan2(other._y - center._y, other._x - center._x);
 

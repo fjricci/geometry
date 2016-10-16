@@ -11,6 +11,8 @@ To install nhlomann/json (https://github.com/nlohmann/json):
 
 `brew tap nlohmann/json && brew install nlohmann_json`
 
+The local file `json.hpp` comes from this library.
+
 ### Building
 
 `mkdir build && cd build
