@@ -3,8 +3,8 @@
 
 #include "Geometry.h"
 
-#include <cassert>
 #include <cmath>
+#include <stdexcept>
 
 // Point
 
@@ -17,8 +17,7 @@ double Point::computeLinearDistance(Point const &other) const {
   return sqrt(squareDist);
 }
 
-double Point::computeArcAngle(Point const &other,
-                              Point const &center) const {
+double Point::computeArcAngle(Point const &other, Point const &center) const {
   double radius = computeLinearDistance(center);
   double startAngle = atan2(_y - center._y, _x - center._x);
   double endAngle = atan2(other._y - center._y, other._x - center._x);
@@ -34,8 +33,7 @@ double Point::computeArcDistance(Point const &other,
   return std::abs(radius * computeArcAngle(other, center));
 }
 
-Point Point::computeArcPoint(Point const &other,
-                             Point const &center) const {
+Point Point::computeArcPoint(Point const &other, Point const &center) const {
   double radius = computeLinearDistance(center);
   double angle = computeArcAngle(other, center) / 2;
 
@@ -48,9 +46,12 @@ Point Point::computeArcPoint(Point const &other,
 // CurvedEdge
 
 CurvedEdge::CurvedEdge(Point start, Point end, Point center)
-    : Edge(start, end), _center(center), _arcPoint(start.computeArcPoint(end, center)){
+    : Edge(start, end), _center(center),
+      _arcPoint(start.computeArcPoint(end, center)) {
   _radius = start.computeLinearDistance(center);
-  assert(_radius == end.computeLinearDistance(center));
+  if (_radius != end.computeLinearDistance(center)) {
+    throw std::invalid_argument("Circular coordinates are invalid");
+  }
 
   _len = start.computeArcDistance(end, center);
 }

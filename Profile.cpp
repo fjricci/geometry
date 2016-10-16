@@ -4,7 +4,6 @@
 #include "Profile.h"
 
 #include <algorithm>
-#include <cassert>
 #include <cmath>
 #include <limits>
 #include <vector>
@@ -15,7 +14,9 @@
 #define TIME_COST 0.07
 
 Profile::Profile(std::vector<std::shared_ptr<Edge>> edges) : _profile(edges) {
-  assert(isValid());
+  if (!isValid()) {
+    throw std::invalid_argument("invalid geometry provided");
+  }
 
   _cost = computeTimeCost() + computeAreaCost();
 }

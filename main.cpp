@@ -15,16 +15,14 @@
 
 using json = nlohmann::json;
 
-static void parseJsonFile(std::string &filename) {
+static void parseJsonFile(std::string &filename,
+                          std::vector<std::shared_ptr<Edge>> &edgeVec) {
   std::ifstream inputFile(filename);
 
   json jsonObj;
   inputFile >> jsonObj;
 
-  assert(jsonObj.count("Edges") == 1);
   json edges = jsonObj["Edges"];
-
-  assert(jsonObj.count("Vertices") == 1);
   json vertices = jsonObj["Vertices"];
 
   std::unordered_map<size_t, Point> vertexMap;
@@ -36,7 +34,6 @@ static void parseJsonFile(std::string &filename) {
     vertexMap.emplace(idx, p);
   }
 
-  std::vector<std::shared_ptr<Edge>> edgeVec;
   for (auto const &edge : edges) {
     std::string type = edge["Type"];
     std::vector<size_t> vertices = edge["Vertices"];
@@ -55,12 +52,9 @@ static void parseJsonFile(std::string &filename) {
 
       edgeVec.emplace_back(std::make_shared<CurvedEdge>(start, end, center));
     } else {
-      assert(0);
+      throw std::invalid_argument("invalid edge type: " + type);
     }
   }
-
-  Profile profile(edgeVec);
-  std::cout << profile.getCost() << std::endl;
 }
 
 int main(int argc, char **argv) {
@@ -72,7 +66,21 @@ int main(int argc, char **argv) {
   std::string filename(argv[1]);
   std::cout << "computing quote for: " << filename << std::endl;
 
-  parseJsonFile(filename);
+  std::vector<std::shared_ptr<Edge>> edgeVec;
+  try {
+    parseJsonFile(filename, edgeVec);
+  } catch (const std::invalid_argument &e) {
+    std::cerr << "error: invalid json file provided" << std::endl;
+    exit(EXIT_FAILURE);
+  }
+
+  try {
+    Profile profile(edgeVec);
+    std::cout << "Cost: " << profile.getCost() << std::endl;
+  } catch (const std::invalid_argument &e) {
+    std::cerr << "error: geometry is invalid" << std::endl;
+    exit(EXIT_FAILURE);
+  }
 
   return 0;
 }
