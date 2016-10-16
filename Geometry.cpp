@@ -17,24 +17,40 @@ double Point::computeLinearDistance(Point const &other) const {
   return sqrt(squareDist);
 }
 
-// r * acos((2r^2 - |p1 - p2|^2) / 2r^2)
-double Point::computeArcDistance(Point const &other,
-                                 Point const &center) const {
+double Point::computeArcAngle(Point const &other,
+                              Point const &center) const {
   double radius = computeLinearDistance(center);
   double linearDist = computeLinearDistance(other);
 
   double radiusSq = 2 * radius * radius;
   double distSq = linearDist * linearDist;
 
-  double angle = acos((radiusSq - distSq) / radiusSq);
+  return acos((radiusSq - distSq) / radiusSq);
+}
 
-  return radius * angle;
+// r * acos((2r^2 - |p1 - p2|^2) / 2r^2)
+double Point::computeArcDistance(Point const &other,
+                                 Point const &center) const {
+  double radius = computeLinearDistance(center);
+
+  return radius * computeArcAngle(other, center);
+}
+
+Point Point::computeArcPoint(Point const &other,
+                             Point const &center) const {
+  double radius = computeLinearDistance(center);
+  double angle = computeArcAngle(other, center) / 2;
+
+  double x = _x + radius * sin(angle);
+  double y = _y - radius * (1 - cos(angle));
+
+  return Point(x, y);
 }
 
 // CurvedEdge
 
 CurvedEdge::CurvedEdge(Point start, Point end, Point center)
-    : Edge(start, end), _center(center) {
+    : Edge(start, end), _center(center), _arcPoint(start.computeArcPoint(end, center)){
   _radius = start.computeLinearDistance(center);
   assert(_radius == end.computeLinearDistance(center));
 

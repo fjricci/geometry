@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <algorithm>
 #include <memory>
 
 // Represents a single point on a 2D grid
@@ -28,6 +29,10 @@ public:
 public:
   double computeLinearDistance(Point const &other) const;
   double computeArcDistance(Point const &other, Point const &center) const;
+  Point computeArcPoint(Point const &other, Point const &center) const;
+
+protected:
+  double computeArcAngle(Point const &other, Point const &center) const;
 
 public:
   double getX() const { return _x; }
@@ -61,6 +66,20 @@ public:
   const Point &getStart() const { return _start; }
   const Point &getEnd() const { return _end; }
 
+public:
+  virtual double getMinX() const {
+    return std::min(_start.getX(), _end.getX());
+  }
+  virtual double getMaxX() const {
+    return std::max(_start.getX(), _end.getX());
+  }
+  virtual double getMinY() const {
+    return std::min(_start.getY(), _end.getY());
+  }
+  virtual double getMaxY() const {
+    return std::max(_start.getY(), _end.getY());
+  }
+
 protected:
   const Point _start;
   const Point _end;
@@ -73,8 +92,8 @@ public:
   }
 
 public:
-  double getRadius() const { return 0; }
-  double getLength() const { return _len; }
+  double getRadius() const override { return 0; }
+  double getLength() const override { return _len; }
 
 protected:
   double _len;
@@ -85,11 +104,26 @@ public:
   CurvedEdge(Point start, Point end, Point center);
 
 public:
-  double getRadius() const { return _radius; }
-  double getLength() const { return _len; }
+  double getRadius() const override { return _radius; }
+  double getLength() const override { return _len; }
+
+public:
+  double getMinX() const override {
+    return std::min(Edge::getMinX(), _arcPoint.getX());
+  }
+  double getMaxX() const override {
+    return std::max(Edge::getMaxX(), _arcPoint.getX());
+  }
+  double getMinY() const override {
+    return std::min(Edge::getMinY(), _arcPoint.getY());
+  }
+  double getMaxY() const override {
+    return std::max(Edge::getMaxY(), _arcPoint.getY());
+  }
 
 protected:
   Point _center;
+  Point _arcPoint;
   double _len;
   double _radius;
 };

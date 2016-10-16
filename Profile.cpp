@@ -37,19 +37,24 @@ double Profile::computeTimeCost() const {
 }
 
 double Profile::computeAreaCost() const {
-  std::vector<double> xVals;
-  std::vector<double> yVals;
+  std::vector<double> xMinVals;
+  std::vector<double> yMinVals;
+  std::vector<double> xMaxVals;
+  std::vector<double> yMaxVals;
+
   for (auto edge : _profile) {
-    xVals.push_back(edge->getStart().getX());
-    xVals.push_back(edge->getEnd().getX());
-    yVals.push_back(edge->getStart().getY());
-    yVals.push_back(edge->getEnd().getY());
+    xMinVals.push_back(edge->getMinX());
+    yMinVals.push_back(edge->getMinY());
+    xMaxVals.push_back(edge->getMaxX());
+    yMaxVals.push_back(edge->getMaxY());
   }
 
-  double xMin = *std::min_element(xVals.begin(), xVals.end());
-  double yMin = *std::min_element(yVals.begin(), yVals.end());
-  double xMax = *std::max_element(xVals.begin(), xVals.end()) + PADDING_SIZE;
-  double yMax = *std::max_element(yVals.begin(), yVals.end()) + PADDING_SIZE;
+  double xMin = *std::min_element(xMinVals.begin(), xMinVals.end());
+  double yMin = *std::min_element(yMinVals.begin(), yMinVals.end());
+  double xMax =
+      *std::max_element(xMaxVals.begin(), xMaxVals.end()) + PADDING_SIZE;
+  double yMax =
+      *std::max_element(yMaxVals.begin(), yMaxVals.end()) + PADDING_SIZE;
 
   return (xMax - xMin) * (yMax - yMin) * MATERIAL_COST;
 }
