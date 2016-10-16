@@ -20,12 +20,10 @@ double Point::computeLinearDistance(Point const &other) const {
 double Point::computeArcAngle(Point const &other,
                               Point const &center) const {
   double radius = computeLinearDistance(center);
-  double linearDist = computeLinearDistance(other);
+  double startAngle = atan2(_y - center._y, _x - center._x);
+  double endAngle = atan2(other._y - center._y, other._x - center._x);
 
-  double radiusSq = 2 * radius * radius;
-  double distSq = linearDist * linearDist;
-
-  return acos((radiusSq - distSq) / radiusSq);
+  return startAngle - endAngle;
 }
 
 // r * acos((2r^2 - |p1 - p2|^2) / 2r^2)
@@ -33,7 +31,7 @@ double Point::computeArcDistance(Point const &other,
                                  Point const &center) const {
   double radius = computeLinearDistance(center);
 
-  return radius * computeArcAngle(other, center);
+  return std::abs(radius * computeArcAngle(other, center));
 }
 
 Point Point::computeArcPoint(Point const &other,
@@ -41,8 +39,8 @@ Point Point::computeArcPoint(Point const &other,
   double radius = computeLinearDistance(center);
   double angle = computeArcAngle(other, center) / 2;
 
-  double x = _x + radius * sin(angle);
-  double y = _y - radius * (1 - cos(angle));
+  double x = center._x + radius * sin(angle);
+  double y = center._y - radius * (1 - cos(angle));
 
   return Point(x, y);
 }

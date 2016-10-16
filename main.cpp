@@ -3,9 +3,9 @@
 //
 //  Main runner for quote computation program
 
-#include "json.hpp"
 #include "Geometry.h"
 #include "Profile.h"
+#include "json.hpp"
 
 #include <cassert>
 #include <fstream>
@@ -27,9 +27,9 @@ static void parseJsonFile(std::string &filename) {
   assert(jsonObj.count("Vertices") == 1);
   json vertices = jsonObj["Vertices"];
 
-  std::unordered_map<int, Point> vertexMap;
+  std::unordered_map<size_t, Point> vertexMap;
   for (json::iterator it = vertices.begin(); it != vertices.end(); ++it) {
-    int idx = std::stoul(it.key());
+    size_t idx = std::stoul(it.key());
     json coords = it.value();
     Point p(coords["Position"]["X"], coords["Position"]["Y"]);
 
@@ -39,7 +39,7 @@ static void parseJsonFile(std::string &filename) {
   std::vector<std::shared_ptr<Edge>> edgeVec;
   for (auto const &edge : edges) {
     std::string type = edge["Type"];
-    std::vector<unsigned long> vertices = edge["Vertices"];
+    std::vector<size_t> vertices = edge["Vertices"];
 
     Point start = vertexMap.at(vertices[0]);
     Point end = (vertices.size() == 1) ? start : vertexMap.at(vertices[1]);
@@ -48,6 +48,11 @@ static void parseJsonFile(std::string &filename) {
       edgeVec.emplace_back(std::make_shared<StraightEdge>(start, end));
     } else if (type == "CircularArc") {
       Point center(edge["Center"]["X"], edge["Center"]["Y"]);
+
+      if (static_cast<size_t>(edge["ClockwiseFrom"]) != vertices[0]) {
+        std::swap(start, end);
+      }
+
       edgeVec.emplace_back(std::make_shared<CurvedEdge>(start, end, center));
     } else {
       assert(0);

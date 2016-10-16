@@ -27,7 +27,7 @@ double Profile::computeTimeCost() const {
     double r = edge->getRadius();
     double len = edge->getLength();
 
-    double modLen = (r == 0) ? len : len * exp(-1 / r);
+    double modLen = (r == 0) ? len : len / exp(-1 / r);
 
     timeCost += (TIME_COST / MAX_SPEED) * modLen;
   }
